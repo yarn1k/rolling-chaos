@@ -9,16 +9,19 @@ namespace Core
         private readonly SignalBus _signalBus;
         private readonly PlayerFactory _playerFactory;
         private PlayerController _playerController;
+        private CameraView _cameraView;
 
-        public Game(SignalBus signalBus, PlayerFactory playerFactory)
+        public Game(SignalBus signalBus, PlayerFactory playerFactory, CameraView cameraView)
         {
             _signalBus = signalBus;
             _playerFactory = playerFactory;
+            _cameraView = cameraView;
         }
 
         void IInitializable.Initialize()
         {
             SpawnPlayer();
+            _cameraView.InitTarget(_playerController.PlayerTransform);
         }
 
         private void SpawnPlayer()

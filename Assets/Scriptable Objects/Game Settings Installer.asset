@@ -12,5 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b151e7630ddad194f811c1e682751100, type: 3}
   m_Name: Game Settings Installer
   m_EditorClassIdentifier: 
+  _gameSettings:
+    OffsetCamera: {x: 0, y: 0, z: 0}
+    SmoothSpeedCamera: 8
   _playerSettings:
     MovementSpeed: 5

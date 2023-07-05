@@ -8,6 +8,8 @@ namespace Core.Player
         private readonly PlayerModel _model;
         private readonly PlayerView _view;
 
+        public Transform PlayerTransform => _view.transform;
+
         public PlayerController(PlayerModel playerModel, PlayerView playerView)
         {
             _camera = Camera.main;
