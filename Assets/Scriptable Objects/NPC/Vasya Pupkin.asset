@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e05e2265be344e24a92ba1a263ff1780, type: 3}
+  m_Name: Vasya Pupkin
+  m_EditorClassIdentifier: 
+  Name: Vasya Pupkin
+  Age: 18
+  Gender: 1
+  Portrait: {fileID: 21300000, guid: 70632ddfe8e71b04b8f90ef7e29a9e98, type: 3}
+  AppearanceDescription: 
+  ShortBiography: 
+  PersonalityTraits: 
+  Goals: 
+  Persuasion: 2
+  Intimidation: 3
+  Deception: 1
+  Insight: 2
