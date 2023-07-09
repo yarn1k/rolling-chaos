@@ -159,7 +159,7 @@ public DialogueBattleSystem(SignalBus signalBus, AsyncProcessor asyncProcessor, 
                 int attack2 = EnemyAttack();
                 int defense2 = PlayerDefence();
 
-                / _asyncProcessor.StartCoroutine(SendPostRequest("player", true));
+                //_asyncProcessor.StartCoroutine(SendPostRequest("player", true));
 
                 if (attack > defense)
                 {
