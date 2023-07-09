@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20e590f23619541428b3d15cdf70eda9, type: 3}
+  m_Name: 2
+  m_EditorClassIdentifier: 
+  Name: "\u0414\u043E\u0431\u044B\u0442\u044C \u0438\u043D\u0433\u0440\u0435\u0434\u0438\u0435\u043D\u0442\u044B
+    \u0438\u0437 \u043B\u0430\u0431\u043E\u0440\u0430\u0442\u043E\u0440\u0438\u0438
+    \u0410\u043B\u044C\u0432\u0435\u043D\u0442\u043E"
+  NextQuest: {fileID: 11400000, guid: 2b087de3be1075843b4bf6d5f0e92697, type: 2}
+  NPC:
+  - Model: {fileID: 11400000, guid: 0518a11dcc2c132449c8a8b3b07a4c08, type: 2}
+    QuestType: 2
+  - Model: {fileID: 11400000, guid: 066d3ea8253d8e340be2b8e7dec57ac0, type: 2}
+    QuestType: 1
+  - Model: {fileID: 11400000, guid: 0518a11dcc2c132449c8a8b3b07a4c08, type: 2}
+    QuestType: 1

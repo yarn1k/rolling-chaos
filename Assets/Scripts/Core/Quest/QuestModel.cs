@@ -25,7 +25,6 @@ namespace Core.Quest
     {
         public string Name;
         public QuestModel NextQuest;
-        public List<ProofModel> Proofs;
         public List<NPC> NPC;
     }
 }

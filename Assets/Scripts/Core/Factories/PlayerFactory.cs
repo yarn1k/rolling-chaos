@@ -29,13 +29,15 @@ namespace Core
             PlayerView asset = Resources.Load<PlayerView>(PATH);
             PlayerView view = GameObject.Instantiate<PlayerView>(asset);
 
-            PlayerModel model = _container.Instantiate<PlayerModel>(new object[] { 
+            PlayerModel model = _container.Instantiate<PlayerModel>(new object[] {
+                _playerSettings.Name,
                 _playerSettings.Portrait,
+                _playerSettings.MovementSpeed,
                 _playerSettings.Persuasion,
                 _playerSettings.Intimidation,
                 _playerSettings.Deception,
-                _playerSettings.Insight,
-                _playerSettings.MovementSpeed });
+                _playerSettings.Insight
+            });
             _container.Bind<PlayerModel>().FromInstance(model).AsSingle();
 
             _playerController = new PlayerController(model, view);

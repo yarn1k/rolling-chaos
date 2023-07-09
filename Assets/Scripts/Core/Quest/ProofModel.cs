@@ -23,7 +23,6 @@ namespace Core.Proof
         public string Name;
         public Type Type;
         public QuestModel Quest;
-        public string Description;
         public Combination Combination;
     }
 }

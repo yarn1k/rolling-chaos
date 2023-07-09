@@ -1,8 +1,6 @@
-using Core.Battle;
 using Core.Infrastructure.Signals.Game;
 using Core.Quest;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Zenject;
 
 namespace Core.Infrastructure.Installers

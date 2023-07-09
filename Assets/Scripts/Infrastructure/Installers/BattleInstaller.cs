@@ -17,6 +17,7 @@ namespace Core.Infrastructure.Installers
 
             Container.Bind<Button>().FromInstance(_fight).AsSingle();
             Container.BindInterfacesTo<DialogueBattleSystem>().AsSingle();
+            Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle();
         }
 
         private void DeclareSignals()

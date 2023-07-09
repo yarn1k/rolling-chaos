@@ -6,6 +6,7 @@ namespace Core.Player
     {
         public string Name;
         public Sprite Portrait;
+        public float MovementSpeed;
         [Range(0f, 4f)]
         public byte Persuasion;
         [Range(0f, 4f)]
@@ -14,22 +15,24 @@ namespace Core.Player
         public byte Deception;
         [Range(0f, 4f)]
         public byte Insight;
-        public float MovementSpeed;
-
+        
         public PlayerModel(
-            Sprite portrait, 
+            string name,
+            Sprite portrait,
+            float movementSpeed,
             byte persuasion, 
             byte intimidation, 
             byte deception, 
-            byte insight, 
-            float movementSpeed)
+            byte insight
+        )
         {
+            Name = name;
             Portrait = portrait;
+            MovementSpeed = movementSpeed;
             Persuasion = persuasion;
             Intimidation = intimidation;
             Deception = deception;
             Insight = insight;
-            MovementSpeed = movementSpeed;
         }
     }
 }

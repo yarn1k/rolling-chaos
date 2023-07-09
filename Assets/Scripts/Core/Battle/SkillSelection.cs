@@ -1,7 +1,6 @@
 using Core.Infrastructure.Signals.Battle;
 using Core.Proof;
 using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;

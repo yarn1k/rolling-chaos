@@ -2,15 +2,24 @@ using Core.Infrastructure.Signals.Battle;
 using Core.NPC;
 using Core.Player;
 using Core.Proof;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using Zenject;
 
 namespace Core.Battle
 {
+    public class AsyncProcessor : MonoBehaviour
+    {
+        // Purposely left empty
+    }
+
     public class DialogueBattleSystem : IInitializable
     {
         private readonly SignalBus _signalBus;
+        private AsyncProcessor _asyncProcessor;
         private int _playerMentalPoints = 3;
         private int _enemyMentalPoints = 3;
         private PlayerModel _player;
@@ -18,10 +27,12 @@ namespace Core.Battle
         private Combination? _selectedSkill;
         private int _clueBonusIndex = -1;
         private Button _fight;
+        private List<object> _history = new ();
 
-        public DialogueBattleSystem(SignalBus signalBus, Button fight)
+public DialogueBattleSystem(SignalBus signalBus, AsyncProcessor asyncProcessor, Button fight)
         {
             _signalBus = signalBus;
+            _asyncProcessor = asyncProcessor;
             _fight = fight;
         }
 
@@ -121,11 +132,19 @@ namespace Core.Battle
                 int attack = PlayerAttack();
                 int defense = EnemyDefence();
 
+                _asyncProcessor.StartCoroutine(SendPostRequest("player", true));
+
                 if (attack > defense)
                 {
                     _enemyMentalPoints--;
+                    _asyncProcessor.StartCoroutine(SendPostRequest("enemy", true));
+                } 
+                else
+                {
+                    _asyncProcessor.StartCoroutine(SendPostRequest("enemy", false));
                 }
 
+                //_history.Add(new Dictionary<string, object>() { { "role", "user" }, { "content", "Hello!" } });
                 _signalBus.Fire(new BattleLogMessage { Message = "Hello!", Sender = "Player" });
                 _signalBus.Fire(new BattleLogMessage { Message = "Hello!", Sender = "Enemy" });
 
@@ -140,9 +159,16 @@ namespace Core.Battle
                 int attack2 = EnemyAttack();
                 int defense2 = PlayerDefence();
 
+                / _asyncProcessor.StartCoroutine(SendPostRequest("player", true));
+
                 if (attack > defense)
                 {
                     _playerMentalPoints--;
+                    //_asyncProcessor.StartCoroutine(SendPostRequest("enemy", false));
+                }
+                else
+                {
+                    //_asyncProcessor.StartCoroutine(SendPostRequest("enemy", true));
                 }
 
                 Debug.Log("Player Mental Points: " + _playerMentalPoints);
@@ -157,6 +183,48 @@ namespace Core.Battle
                 _signalBus.Fire(new BattleLogMessage { Message = "Hello!", Sender = "Player" });
 
                 EndRound();
+            }
+        }
+
+        IEnumerator<UnityWebRequestAsyncOperation> SendPostRequest(string role, bool win)
+        {
+            Dictionary<string, object> parameters = new();
+            if (role == "player")
+            {
+                parameters.Add("role", _player.Name);
+                parameters.Add("facts", new object[0]);
+            }
+            else
+            {
+                parameters.Add("role", _enemy.Name);
+                parameters.Add("facts", new[]
+                {
+                    "украл хлеб из местной пекарни",
+                    "fed homeless"
+                });
+            }
+            parameters.Add("acceptence", win);
+            parameters.Add("history", _history);
+            
+            
+            string jsonBody = JsonConvert.SerializeObject(parameters);
+            //jsonBody= "[" + jsonBody + "]";
+            Debug.Log(jsonBody);
+
+            UnityWebRequest www = UnityWebRequest.Post("https://jam.bezsoul.studio/qa", jsonBody);
+            www.SetRequestHeader("accept", "application/json");
+
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Response: " + www.downloadHandler.text);
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Response: " + www.downloadHandler.text);
+                Debug.Log("POST request sent successfully.");
             }
         }
 
@@ -175,9 +243,12 @@ namespace Core.Battle
         private void EndBattle()
         {
             if (_enemyMentalPoints == 0)
+            {
                 Debug.Log("Win");
-            //выдать награду
-            //npc добавляется в список talkings
+                //если quest_finisher = завершить квест
+                //иначе выдать награду
+                //npc добавляется в список talkings
+            }
             Debug.Log("EndBattle");
         }
 
