@@ -29,12 +29,20 @@ namespace Core
             PlayerView asset = Resources.Load<PlayerView>(PATH);
             PlayerView view = GameObject.Instantiate<PlayerView>(asset);
 
-            PlayerModel model = _container.Instantiate<PlayerModel>(new object[] { _playerSettings.MovementSpeed });
+            PlayerModel model = _container.Instantiate<PlayerModel>(new object[] { 
+                _playerSettings.Portrait,
+                _playerSettings.Persuasion,
+                _playerSettings.Intimidation,
+                _playerSettings.Deception,
+                _playerSettings.Insight,
+                _playerSettings.MovementSpeed });
             _container.Bind<PlayerModel>().FromInstance(model).AsSingle();
 
             _playerController = new PlayerController(model, view);
 
             _signalBus.Subscribe<CheckPossibilityOfBattle>(OnCheckBattle);
+            _signalBus.Subscribe<BattleLoadScene>(() => _playerController.LoadBattleScene(_signalBus));
+            _signalBus.Subscribe<PlayerCollectedProof>(_playerController.AddProof);
             _signalBus.Subscribe<Quest—ompleted>(_playerController.OnQuest—ompleted);
 
             return _playerController;
@@ -55,6 +63,7 @@ namespace Core
         void OnDestroy()
         {
             _signalBus.Unsubscribe<CheckPossibilityOfBattle>(OnCheckBattle);
+            _signalBus.Unsubscribe<BattleLoadScene>(() => _playerController.LoadBattleScene(_signalBus));
             _signalBus.Unsubscribe<Quest—ompleted>(_playerController.OnQuest—ompleted);
         }
     }

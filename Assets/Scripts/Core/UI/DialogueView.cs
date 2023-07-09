@@ -1,7 +1,6 @@
+using Core.Infrastructure.Signals.Game;
 using Core.Infrastructure.Signals.UI;
-using Core.Models;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 
@@ -45,7 +44,8 @@ namespace Core.UI
 
         public void StartBattle()
         {
-            SceneManager.LoadScene(Constants.Scenes.Battle);
+            _signalBus.Fire(new BattleLoadScene {});
+            //SceneManager.LoadScene(Constants.Scenes.Battle);
         }
 
         private void OnDestroy()

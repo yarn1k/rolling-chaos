@@ -7,16 +7,11 @@ namespace Core.NPC
 {
     public class NPCView : MonoBehaviour
     {
+        [Inject] 
         private SignalBus _signalBus;
         [SerializeField]
         private NPCModel _model;
         private bool _playerInRange = false;
-
-        [Inject]
-        private void Construct(SignalBus signalBus)
-        {
-            _signalBus = signalBus;
-        }
 
         private void OnMouseDown()
         {

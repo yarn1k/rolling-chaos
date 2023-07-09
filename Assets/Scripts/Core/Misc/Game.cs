@@ -1,4 +1,3 @@
-using Core.Infrastructure.Signals.Game;
 using Core.Player;
 using Core.Quest;
 using Zenject;

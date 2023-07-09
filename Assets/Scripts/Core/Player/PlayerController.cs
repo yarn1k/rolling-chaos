@@ -1,3 +1,4 @@
+using Core.Battle;
 using Core.Infrastructure.Signals.Game;
 using Core.Infrastructure.Signals.UI;
 using Core.NPC;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using Zenject;
 using IInitializable = Zenject.IInitializable;
 
@@ -14,6 +16,7 @@ namespace Core.Player
 {
     public class PlayerController : IInitializable
     {
+        private SignalBus _signalBus;
         private Camera _camera;
         private readonly PlayerModel _model;
         private readonly PlayerView _view;
@@ -21,6 +24,7 @@ namespace Core.Player
         private QuestModel _currentQuest;
         private List<ProofModel> _proofs = new();
         private List<NPCModel> _talkings = new();
+        private NPCModel _lastInterlocutor;
 
         public Transform PlayerTransform => _view.transform;
 
@@ -60,18 +64,37 @@ namespace Core.Player
             _currentQuest = quest;
         }
 
-        private void AddProof(ProofModel proof)
+        public void AddProof(PlayerCollectedProof signal)
         {
-            _proofs.Add(proof);
+            _proofs.Add(signal.Proof);
         }
 
         public bool CheckBattle(NPCModel npc)
         {
+            _lastInterlocutor = npc;
             if (!_talkings.Contains(npc) && 
                 _currentQuest.NPC.Where(x => x.Model == npc && 
                 x.QuestType != QuestType.QuestGiver).Count() > 0)
                 return true;
             return false;
+        }
+
+        public void LoadBattleScene(SignalBus signalBus)
+        {
+            List<ProofModel> proofs = GetAvailableProofs();
+            SceneManager.LoadScene(Constants.Scenes.Battle);
+            BattleView.InitBattle(new BattleInitialize { Player = _model, npc = _lastInterlocutor, Proofs = proofs });
+        }
+
+        private List<ProofModel> GetAvailableProofs()
+        {
+            List<ProofModel> proofs = new();
+            foreach (var proof in _proofs)
+            {
+                if (proof.Quest == _currentQuest)
+                    proofs.Add(proof);
+            }
+            return proofs;
         }
 
         public void OnQuest—ompleted(Quest—ompleted signal)

@@ -15,6 +15,15 @@ namespace Core.Models
     [Serializable]
     public class PlayerSettings
     {
+        public Sprite Portrait;
+        [Range(0f, 4f)]
+        public byte Persuasion;
+        [Range(0f, 4f)]
+        public byte Intimidation;
+        [Range(0f, 4f)]
+        public byte Deception;
+        [Range(0f, 4f)]
+        public byte Insight;
         [Range(1f, 10f)]
         public float MovementSpeed;
     }
@@ -29,8 +38,6 @@ namespace Core.Models
 
         public override void InstallBindings()
         {
-            SignalBusInstaller.Install(Container);
-
             //Container.Bind<ILogger>().To<StandaloneLogger>().AsCached();
 
             Container.Bind<GameSettings>().FromInstance(_gameSettings).IfNotBound();

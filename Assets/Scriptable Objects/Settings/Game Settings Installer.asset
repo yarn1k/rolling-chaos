@@ -16,4 +16,9 @@ MonoBehaviour:
     OffsetCamera: {x: 0, y: 0, z: 0}
     SmoothSpeedCamera: 8
   _playerSettings:
+    Portrait: {fileID: 21300000, guid: 17035c204825f6340a252046ab6476fd, type: 3}
+    Persuasion: 3
+    Intimidation: 2
+    Deception: 2
+    Insight: 1
     MovementSpeed: 5

@@ -1,5 +1,8 @@
 using Core.NPC;
+using Core.Player;
+using Core.Proof;
 using Core.Quest;
+using System.Collections.Generic;
 
 namespace Core.Infrastructure.Signals.Game
 {
@@ -7,6 +10,17 @@ namespace Core.Infrastructure.Signals.Game
     {
         public NPCModel npc;
     }
+    public struct BattleLoadScene {}
+    public struct BattleInitialize
+    {
+        public PlayerModel Player;
+        public NPCModel npc;
+        public List<ProofModel> Proofs;
+    }
+    public struct PlayerCollectedProof
+    {
+        public ProofModel Proof;
+    };
     public struct Quest—ompleted
     {
         public QuestModel NextQuest;
