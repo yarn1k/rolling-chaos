@@ -3,7 +3,9 @@ using Core.NPC;
 using Core.Player;
 using Core.Proof;
 using Newtonsoft.Json;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -25,6 +27,7 @@ namespace Core.Battle
         private PlayerModel _player;
         private NPCModel _enemy;
         private Combination? _selectedSkill;
+        private string _enemySkill;
         private int _clueBonusIndex = -1;
         private Button _fight;
         private List<object> _history = new ();
@@ -66,9 +69,9 @@ public DialogueBattleSystem(SignalBus signalBus, AsyncProcessor asyncProcessor, 
             return RollDice() + _player.Insight;
         }
 
-        private int EnemyAttack()
+        private int EnemyAttack(string skill)
         {
-            return RollDice() + GetEnemySkillValue(_selectedSkill);
+            return RollDice() + GetEnemySkillValue(skill);
         }
 
         private int EnemyDefence()
@@ -103,15 +106,15 @@ public DialogueBattleSystem(SignalBus signalBus, AsyncProcessor asyncProcessor, 
             }
         }
 
-        private int GetEnemySkillValue(Combination? skill)
+        private int GetEnemySkillValue(string skill)
         {
             switch (skill)
             {
-                case Combination.Persuasion:
+                case "Persuasion":
                     return _enemy.Persuasion;
-                case Combination.Intimidation:
+                case "Intimidation":
                     return _enemy.Intimidation;
-                case Combination.Deception:
+                case "Deception":
                     return _enemy.Deception;
                 default:
                     return 0;
@@ -129,24 +132,20 @@ public DialogueBattleSystem(SignalBus signalBus, AsyncProcessor asyncProcessor, 
             {
                 _fight.interactable = false;
 
+                _asyncProcessor.StartCoroutine(SendPostRequest("user", false));
+
                 int attack = PlayerAttack();
                 int defense = EnemyDefence();
-
-                _asyncProcessor.StartCoroutine(SendPostRequest("player", true));
 
                 if (attack > defense)
                 {
                     _enemyMentalPoints--;
-                    _asyncProcessor.StartCoroutine(SendPostRequest("enemy", true));
+                    _asyncProcessor.StartCoroutine(SendPostRequest("assistant", true));
                 } 
                 else
                 {
-                    _asyncProcessor.StartCoroutine(SendPostRequest("enemy", false));
+                    _asyncProcessor.StartCoroutine(SendPostRequest("assistant", false));
                 }
-
-                //_history.Add(new Dictionary<string, object>() { { "role", "user" }, { "content", "Hello!" } });
-                _signalBus.Fire(new BattleLogMessage { Message = "Hello!", Sender = "Player" });
-                _signalBus.Fire(new BattleLogMessage { Message = "Hello!", Sender = "Enemy" });
 
                 if (_enemyMentalPoints == 0)
                 {
@@ -156,19 +155,19 @@ public DialogueBattleSystem(SignalBus signalBus, AsyncProcessor asyncProcessor, 
 
                 Debug.Log("Enemy Mental Points: " + _enemyMentalPoints);
 
-                int attack2 = EnemyAttack();
+                _asyncProcessor.StartCoroutine(SendPostRequest("assistant", true));
+
+                int attack2 = EnemyAttack(_enemySkill);
                 int defense2 = PlayerDefence();
 
-                //_asyncProcessor.StartCoroutine(SendPostRequest("player", true));
-
-                if (attack > defense)
+                if (attack2 > defense2)
                 {
                     _playerMentalPoints--;
-                    //_asyncProcessor.StartCoroutine(SendPostRequest("enemy", false));
+                    _asyncProcessor.StartCoroutine(SendPostRequest("user", true));
                 }
                 else
                 {
-                    //_asyncProcessor.StartCoroutine(SendPostRequest("enemy", true));
+                    _asyncProcessor.StartCoroutine(SendPostRequest("user", false));
                 }
 
                 Debug.Log("Player Mental Points: " + _playerMentalPoints);
@@ -179,51 +178,58 @@ public DialogueBattleSystem(SignalBus signalBus, AsyncProcessor asyncProcessor, 
                     return;
                 }
 
-                _signalBus.Fire(new BattleLogMessage { Message = "Hello!", Sender = "Enemy" });
-                _signalBus.Fire(new BattleLogMessage { Message = "Hello!", Sender = "Player" });
-
                 EndRound();
             }
         }
 
-        IEnumerator<UnityWebRequestAsyncOperation> SendPostRequest(string role, bool win)
+        IEnumerator SendPostRequest(string role, bool acceptence)
         {
             Dictionary<string, object> parameters = new();
-            if (role == "player")
+            if (role == "user")
             {
                 parameters.Add("role", _player.Name);
-                parameters.Add("facts", new object[0]);
+                parameters.Add("facts", "[]");
             }
             else
             {
                 parameters.Add("role", _enemy.Name);
-                parameters.Add("facts", new[]
-                {
-                    "украл хлеб из местной пекарни",
-                    "fed homeless"
-                });
+                parameters.Add("facts", 
+                    JsonConvert.SerializeObject(new[]
+                    {
+                        "украл хлеб из местной пекарни",
+                        "fed homeless"
+                    }));
             }
-            parameters.Add("acceptence", win);
-            parameters.Add("history", _history);
-            
-            
-            string jsonBody = JsonConvert.SerializeObject(parameters);
-            //jsonBody= "[" + jsonBody + "]";
-            Debug.Log(jsonBody);
+            parameters.Add("acceptence", acceptence);
+            parameters.Add("history", JsonConvert.SerializeObject(_history));
 
-            UnityWebRequest www = UnityWebRequest.Post("https://jam.bezsoul.studio/qa", jsonBody);
+            var url = string.Format("https://jam.bezsoul.studio/qa?{0}",
+                string.Join("&", parameters.Select(kvp =>
+                string.Format("{0}={1}", kvp.Key, kvp.Value))));
+
+            UnityWebRequest www = UnityWebRequest.Post(url, "");
             www.SetRequestHeader("accept", "application/json");
 
             yield return www.SendWebRequest();
 
             if (www.result != UnityWebRequest.Result.Success)
             {
-                Debug.Log("Response: " + www.downloadHandler.text);
+                Debug.Log("Response Error: " + www.downloadHandler.text);
                 Debug.Log(www.error);
             }
             else
             {
-                Debug.Log("Response: " + www.downloadHandler.text);
+                var response = JsonConvert.DeserializeObject<List<string>>(www.downloadHandler.text);
+                var skill = response[0];
+                var message = response[1];
+
+                _history.Add(new Dictionary<string, object>() { { "role", role }, { "content", message } });
+                _signalBus.Fire(new BattleLogMessage { Message = message, Sender = role });
+
+                if (role == "assistant")
+                    _enemySkill = skill;
+
+                Debug.Log("Response Success: " + www.downloadHandler.text);
                 Debug.Log("POST request sent successfully.");
             }
         }

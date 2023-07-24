@@ -74,7 +74,7 @@ namespace Core.Battle
             var proof = Instantiate(_message, _battleLog);
             var textMesh = proof.GetComponent<TMP_Text>();
             textMesh.text = signal.Message;
-            if (signal.Sender == "Player")
+            if (signal.Sender == "user")
                 textMesh.alignment = TextAlignmentOptions.Left;
             else
                 textMesh.alignment = TextAlignmentOptions.Right;
