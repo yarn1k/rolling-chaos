@@ -1,5 +1,6 @@
 using Core.Infrastructure.Signals.Game;
 using Core.Infrastructure.Signals.UI;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 
@@ -18,7 +19,7 @@ namespace Core.NPC
             if (_playerInRange)
             {
                 _signalBus.Fire(new CheckPossibilityOfBattle { npc = _model });
-                _signalBus.Fire(new OpenDialoguePanel { Portrait = _model.Portrait });
+                _signalBus.Fire(new OpenDialoguePanel { Portrait = _model.Portrait, Name = _model.Name });
             }
         }
 

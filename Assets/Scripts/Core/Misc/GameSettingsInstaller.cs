@@ -25,7 +25,6 @@ namespace Core.Models
         public string ShortBiography;
         public string PersonalityTraits;
         public string Goals;
-        public string ExamplesOfDialogues;
         [Space]
         [Header("Game Parameters")]
         public Sprite Portrait;

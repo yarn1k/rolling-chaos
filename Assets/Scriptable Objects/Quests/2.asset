@@ -17,7 +17,7 @@ MonoBehaviour:
     \u0410\u043B\u044C\u0432\u0435\u043D\u0442\u043E"
   NextQuest: {fileID: 11400000, guid: 2b087de3be1075843b4bf6d5f0e92697, type: 2}
   NPC:
-  - Model: {fileID: 11400000, guid: 0518a11dcc2c132449c8a8b3b07a4c08, type: 2}
+  - Model: {fileID: 11400000, guid: 7a79e8b3fc2d27649bc3886dbfa17231, type: 2}
     QuestType: 2
   - Model: {fileID: 11400000, guid: 066d3ea8253d8e340be2b8e7dec57ac0, type: 2}
     QuestType: 1

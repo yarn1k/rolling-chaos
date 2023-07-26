@@ -13,7 +13,7 @@ namespace Core.Infrastructure.Signals.Game
     public struct BattleLoadScene {}
     public struct BattleInitialize
     {
-        public PlayerModel Player;
+        public PlayerController Player;
         public NPCModel npc;
         public List<ProofModel> Proofs;
     }
@@ -21,8 +21,4 @@ namespace Core.Infrastructure.Signals.Game
     {
         public ProofModel Proof;
     };
-    public struct Quest—ompleted
-    {
-        public QuestModel NextQuest;
-    }
 }

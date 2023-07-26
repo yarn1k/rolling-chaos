@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: "\u0414\u043E\u0431\u044B\u0442\u044C \u043D\u0435\u043A\u0440\u043E\u043D\u043E\u043C\u0438\u043A\u043E\u043D
     \u0438\u0437 \u0430\u0440\u0445\u0438\u0432\u0430 \u0418\u043E\u0433\u0430\u043D\u043D\u0430"
-  NextQuest: {fileID: 11400000, guid: c2da3ee312a6afe4683d8ce2bc6f661e, type: 2}
+  NextQuest: {fileID: 11400000, guid: 7a2103c67beee0b4891acc2494ebfc7b, type: 2}
   NPC:
   - Model: {fileID: 11400000, guid: 0518a11dcc2c132449c8a8b3b07a4c08, type: 2}
     QuestType: 2

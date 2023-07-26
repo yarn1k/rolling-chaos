@@ -1,5 +1,7 @@
 using Core.Infrastructure.Signals.Game;
+using Core.Player;
 using Core.Quest;
+using Core.UI;
 using UnityEngine;
 using Zenject;
 
@@ -16,7 +18,6 @@ namespace Core.Infrastructure.Installers
         {
             DeclareSignals();
 
-            //_cameraView = Camera.main.GetComponent<CameraView>();
             Container.Bind<CameraView>().FromInstance(_cameraView).AsSingle();
             Container.Bind<QuestModel>().FromInstance(_initialQuest).AsSingle();
             Container.BindInterfacesTo<Game>().AsSingle();
@@ -28,8 +29,7 @@ namespace Core.Infrastructure.Installers
         {
             Container.DeclareSignal<CheckPossibilityOfBattle>();
             Container.DeclareSignal<BattleLoadScene>();
-            Container.DeclareSignal<PlayerCollectedProof>();
-            Container.DeclareSignal<QuestÑompleted>();
+            //Container.DeclareSignal<QuestÑompleted>();
         }
 
         private void BindFactories()

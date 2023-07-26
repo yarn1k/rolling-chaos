@@ -15,5 +15,9 @@ MonoBehaviour:
   Name: "\u041F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0436\u0435\u0440\u0442\u0432\u0443
     \u0438\u0437 \u0443\u0447\u0430\u0441\u0442\u043A\u0430 \u043F\u043E\u043B\u0438\u0446\u0438\u0438
     \u0421\u0442\u0438\u0432\u0435\u043D\u0430 \u041E\u0440\u0441\u043E\u043D\u0430"
-  NextQuest: {fileID: 11400000, guid: d3a4fa38ee52c184d959b3f442160639, type: 2}
-  NPC: []
+  NextQuest: {fileID: 11400000, guid: 4964dee1dd211d9499d38df8c340d7b4, type: 2}
+  NPC:
+  - Model: {fileID: 11400000, guid: f708bb75c13c5d14d8b04ff12436c98b, type: 2}
+    QuestType: 2
+  - Model: {fileID: 11400000, guid: 0518a11dcc2c132449c8a8b3b07a4c08, type: 2}
+    QuestType: 1

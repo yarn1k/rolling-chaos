@@ -1,3 +1,4 @@
+using Core.NPC;
 using Core.Proof;
 
 namespace Core.Infrastructure.Signals.Battle

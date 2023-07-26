@@ -41,7 +41,7 @@ namespace Core.Battle
 
         private void Start()
         {
-            InitPortraits(_battleInit.Player.Portrait, _battleInit.npc.Portrait);
+            InitPortraits(_battleInit.Player.Model.Portrait, _battleInit.npc.Portrait);
             InitProofs(_battleInit.Proofs);
         }
 

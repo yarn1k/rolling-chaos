@@ -2,8 +2,9 @@ using Zenject;
 using Core.Player;
 using UnityEngine;
 using Core.Models;
+using Core.UI;
 using Core.Infrastructure.Signals.Game;
-using Core.Infrastructure.Signals.UI;
+using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 
 namespace Core
@@ -40,33 +41,13 @@ namespace Core
             });
             _container.Bind<PlayerModel>().FromInstance(model).AsSingle();
 
-            _playerController = new PlayerController(model, view);
-
-            _signalBus.Subscribe<CheckPossibilityOfBattle>(OnCheckBattle);
-            _signalBus.Subscribe<BattleLoadScene>(() => _playerController.LoadBattleScene(_signalBus));
-            _signalBus.Subscribe<PlayerCollectedProof>(_playerController.AddProof);
-            _signalBus.Subscribe<Quest—ompleted>(_playerController.OnQuest—ompleted);
-
+            _playerController = new PlayerController(_signalBus, model, view);
             return _playerController;
-        }
-
-        private void OnCheckBattle(CheckPossibilityOfBattle signal)
-        {
-            var interactable = _playerController.CheckBattle(signal.npc);
-            _signalBus.Fire(new InteractableBattleButton { Value = interactable });
-
         }
 
         public void Tick()
         {
             _playerController?.Update();
-        }
-
-        void OnDestroy()
-        {
-            _signalBus.Unsubscribe<CheckPossibilityOfBattle>(OnCheckBattle);
-            _signalBus.Unsubscribe<BattleLoadScene>(() => _playerController.LoadBattleScene(_signalBus));
-            _signalBus.Unsubscribe<Quest—ompleted>(_playerController.OnQuest—ompleted);
         }
     }
 }

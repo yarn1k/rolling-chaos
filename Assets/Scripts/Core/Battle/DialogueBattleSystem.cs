@@ -1,15 +1,19 @@
 using Core.Infrastructure.Signals.Battle;
+using Core.Infrastructure.Signals.Game;
 using Core.NPC;
 using Core.Player;
 using Core.Proof;
+using Core.Quest;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
+using Random = UnityEngine.Random;
 
 namespace Core.Battle
 {
@@ -24,15 +28,17 @@ namespace Core.Battle
         private AsyncProcessor _asyncProcessor;
         private int _playerMentalPoints = 3;
         private int _enemyMentalPoints = 3;
+        private PlayerController _playerController;
         private PlayerModel _player;
         private NPCModel _enemy;
+        private QuestModel _currentQuest;
         private Combination? _selectedSkill;
         private string _enemySkill;
         private int _clueBonusIndex = -1;
         private Button _fight;
         private List<object> _history = new ();
 
-public DialogueBattleSystem(SignalBus signalBus, AsyncProcessor asyncProcessor, Button fight)
+        public DialogueBattleSystem(SignalBus signalBus, AsyncProcessor asyncProcessor, Button fight)
         {
             _signalBus = signalBus;
             _asyncProcessor = asyncProcessor;
@@ -44,8 +50,10 @@ public DialogueBattleSystem(SignalBus signalBus, AsyncProcessor asyncProcessor, 
             _signalBus.Subscribe<BattleSkillSelected>(SelectSkill);
             _signalBus.Subscribe<BattleProofSelected>(SelectProof);
 
-            _player = BattleView.BattleInit.Player;
+            _playerController = BattleView.BattleInit.Player;
+            _player = _playerController.Model;
             _enemy = BattleView.BattleInit.npc;
+            _currentQuest = PlayerController.CurrentQuest;
             _fight.onClick.AddListener(Fight);
         }
 
@@ -248,14 +256,25 @@ public DialogueBattleSystem(SignalBus signalBus, AsyncProcessor asyncProcessor, 
 
         private void EndBattle()
         {
+            var questType = _currentQuest.NPC.Where(x => x.Model == _enemy).First().QuestType;
             if (_enemyMentalPoints == 0)
             {
                 Debug.Log("Win");
-                //если quest_finisher = завершить квест
-                //иначе выдать награду
-                //npc добавляется в список talkings
+                if (questType == QuestType.QuestFinisher)
+                {
+                    _playerController.OnQuestСompleted(_currentQuest.NextQuest);
+                }
+                else
+                {
+                    var reward = _enemy.Proofs.Where(x => x.Quest == _currentQuest).First();
+                    _playerController.AddProof(new PlayerCollectedProof { Proof = reward });
+                }
             }
-            Debug.Log("EndBattle");
+            if (questType == QuestType.QuestHelper)
+            {
+                _playerController.MarkNotTalkingNPC(_enemy);
+            }
+            SceneManager.LoadScene(Constants.Scenes.Game);
         }
 
         private void OnDestroy()

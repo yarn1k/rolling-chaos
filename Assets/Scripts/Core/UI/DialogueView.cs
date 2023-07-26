@@ -1,6 +1,8 @@
 using Core.Infrastructure.Signals.Game;
 using Core.Infrastructure.Signals.UI;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 
@@ -11,6 +13,8 @@ namespace Core.UI
         private SignalBus _signalBus;
         [SerializeField]
         private Image _portrait;
+        [SerializeField]
+        private TMP_Text _message;
         [SerializeField]
         private Button _startBattle;
 
@@ -29,6 +33,7 @@ namespace Core.UI
         private void InitPanel(OpenDialoguePanel signal)
         {
             SetPortrait(signal.Portrait);
+            SetDescription(signal.Name);
             Show();
         }
 
@@ -42,10 +47,14 @@ namespace Core.UI
             _portrait.sprite = portrait;
         }
 
+        private void SetDescription(string text)
+        {
+            _message.text = text;
+        }
+
         public void StartBattle()
         {
             _signalBus.Fire(new BattleLoadScene {});
-            //SceneManager.LoadScene(Constants.Scenes.Battle);
         }
 
         private void OnDestroy()

@@ -44,7 +44,8 @@ namespace Core
 
         private void InitQuest()
         {
-            _playerController.InitQuest(_initialQuest);
+            if (PlayerController.CurrentQuest == null)
+                _playerController.InitQuest(_initialQuest);
         }
     }
 }
