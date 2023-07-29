@@ -49,6 +49,7 @@ namespace Core.Player
         {
             MovementInput();
             _view.FaceTarget();
+            _view.SetAnimations();
         }
 
         private void MovementInput()
